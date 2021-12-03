@@ -28,25 +28,30 @@ def move_submarine(moves):
     """Move the submarine according to the instructions in 'moves'.
 
     Each move will be a word and an integer. Words must be one of
-    "forward, up, down." Forward moves the submarine horizontally.
-    Up moves the submarine toward the surface, down moves the sub
-    deeper underwater. Return the final depth and horizonal positions.
+    "forward, up, down."
+    Forward moves the submarine horizontally, and increases the
+    depth by the product of the aim and the value given.
+    Up decreases the aim by the given value.
+    Down increases the aim by the given value.
+    Return the final depth, horizonal positions, and aim.
 
     """
     depth = 0
     horiz = 0
+    aim = 0
 
     for move in moves:
         if move[0] == "forward":
             horiz = horiz + move[1]
+            depth = depth + (aim * move[1])
         elif move[0] == "up":
-            depth = depth - move[1]
+            aim = aim - move[1]
         elif move[0] == "down":
-            depth = depth + move[1]
+            aim = aim + move[1]
         else:
             # skip the step, I guess!
             pass
-    return depth, horiz
+    return depth, horiz, aim
 
 
 def main(moves_file):
@@ -56,8 +61,9 @@ def main(moves_file):
 
     """
     sub_moves = parse_moves(moves_file)
-    depth, horiz = move_submarine(sub_moves)
-    print(f"Final position: {depth} deep, {horiz} forward.")
+    depth, horiz, aim = move_submarine(sub_moves)
+    print("Final position (depth, horizontal, aim): " +
+          f"({depth}, {horiz}, {aim})")
     print(f"The product of those: {depth * horiz}")
 
 
