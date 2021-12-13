@@ -16,6 +16,10 @@ def parse_report(data_report):
     
 
 def get_bit_counts(data, position):
+    """Get the number of zeros and ones in a specific
+    position across all bit-values in a list of data.
+    
+    """
     zero_count = 0
     one_count = 0
     for element in data:
@@ -27,6 +31,14 @@ def get_bit_counts(data, position):
     
 
 def split_on_first_bit(data):
+    """Split the diagnostic data into two lists based on
+    the first bit position. 
+    
+    Entries that have a first bit the matches the majority
+    value of all first bits go to the oxygen rating's list.
+    All other entries go to the CO2 rating's list.
+    
+    """
     zero_count, one_count = get_bit_counts(data, 0)
     if zero_count > one_count:
         keep_bit = "0"
@@ -43,8 +55,11 @@ def split_on_first_bit(data):
 
 
 def get_oxygen_generator_rating(O2_data):
+    """Analyze the bits of the oxygen generator readings.
+    Return the integer value.
+    
+    """
     for pos in range(1, len(O2_data[0])):
-        #print(O2_data)
         if len(O2_data) == 1:
             break
         zero_count, one_count = get_bit_counts(O2_data, pos)
@@ -56,8 +71,11 @@ def get_oxygen_generator_rating(O2_data):
     return int(O2_data[0], 2)
     
 def get_co2_scrubber_rating(CO2_data):
+    """Analyze the bits of the CO2 scrubber readings.
+    Return the integer value.
+    
+    """
     for pos in range(1, len(CO2_data[0])):
-        #print(CO2_data)
         if len(CO2_data) == 1:
             break
         zero_count, one_count = get_bit_counts(CO2_data, pos)
@@ -75,7 +93,6 @@ TESTDATA = ["00100", "11110", "10110", "10111",
         
 def test_get_bit_counts():
     assert(get_bit_counts(TESTDATA, 0) == (5,7))
-    
 
 def test_get_oxygen_generator_rating():
     data, ignore = split_on_first_bit(TESTDATA)
@@ -87,8 +104,12 @@ def test_get_co2_scrubber_rating():
 
 
 def main(diagnostic_report):
+    """Parse the diagnostic report. Get the ratings for the
+    oxygen generator and the CO2 scrubber. Print the 
+    product of those two ratings.
+    Check functions against test data.
     
-    
+    """    
     test_o2, test_co2 = split_on_first_bit(TESTDATA)
     test_o2_rating = get_oxygen_generator_rating(test_o2)
     test_co2_rating = get_co2_scrubber_rating(test_co2)
@@ -100,8 +121,6 @@ def main(diagnostic_report):
     co2 = get_co2_scrubber_rating(co2_data)
     print(f'REAL Life Support Rating: [ {o2*co2} ]')
     
-    
-
 
 if __name__ == "__main__":
     test_get_bit_counts() 
